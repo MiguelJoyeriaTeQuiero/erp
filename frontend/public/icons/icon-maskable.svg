@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fondo completo sin esquinas (maskable — Android adaptive icons) -->
+  <rect width="512" height="512" fill="#0D4F62"/>
+  <!-- "M" centrado en la zona segura (80% del área = 204–307 margin) -->
+  <text
+    x="256"
+    y="336"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="250"
+    font-weight="300"
+    text-anchor="middle"
+    fill="#C9A55C"
+  >M</text>
+</svg>

@@ -1,0 +1,24 @@
+# Normalizar todos los archivos de texto a LF en el repositorio
+# (independientemente del sistema operativo del desarrollador)
+* text=auto eol=lf
+
+# Archivos de Windows que deben mantener CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binarios — no tocar los finales de línea
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.otf binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary

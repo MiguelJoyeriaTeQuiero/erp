@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fondo verde-azulado de marca con esquinas redondeadas -->
+  <rect width="512" height="512" rx="100" fill="#0D4F62"/>
+  <!-- "M" en oro de marca -->
+  <text
+    x="256"
+    y="358"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="310"
+    font-weight="300"
+    text-anchor="middle"
+    fill="#C9A55C"
+  >M</text>
+</svg>

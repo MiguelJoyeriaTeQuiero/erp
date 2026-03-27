@@ -1,0 +1,45 @@
+# ── Variables de entorno ──────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+!.env.example
+
+# ── Dependencias ──────────────────────────────────────────────────────────────
+node_modules/
+
+# ── Compilación TypeScript ────────────────────────────────────────────────────
+dist/
+build/
+*.tsbuildinfo
+
+# ── Archivos subidos (almacenamiento local) ───────────────────────────────────
+uploads/
+
+# ── Prisma — cliente generado ─────────────────────────────────────────────────
+# Las migraciones SÍ se suben al repo
+node_modules/.prisma/
+prisma/*.db
+prisma/migrations/*.db
+
+# ── Tests ─────────────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

@@ -1,0 +1,121 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# .gitignore — raíz del monorepo TQ Metales ERP
+# Cubre: backend (NestJS), frontend (Next.js) e infraestructura (Docker)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Variables de entorno ──────────────────────────────────────────────────────
+# NUNCA subir secrets al repositorio
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+# Permitir el ejemplo (sin valores reales)
+!.env.example
+
+# ── Dependencias ──────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ── Backend — NestJS / TypeScript ─────────────────────────────────────────────
+backend/dist/
+backend/build/
+backend/*.tsbuildinfo
+
+# Archivos subidos por usuarios (se persisten con volumen Docker en producción)
+backend/uploads/
+
+# Prisma: cliente generado (se regenera con `prisma generate`)
+# Las MIGRACIONES sí se suben al repo
+backend/node_modules/.prisma/
+backend/prisma/migrations/*.db
+backend/prisma/*.db
+
+# ── Frontend — Next.js ────────────────────────────────────────────────────────
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── Cobertura de tests ────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+backend/coverage/
+frontend/coverage/
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# Datos de volúmenes montados localmente (si se usa bind-mount para desarrollo)
+.docker/
+docker/data/
+postgres-data/
+
+# ── IDEs y editores ───────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ── Sistema operativo ─────────────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ── Certificados y claves ─────────────────────────────────────────────────────
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+.vercel
+.turbo
+.cache/
+tmp/
+temp/
