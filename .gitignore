@@ -3,6 +3,9 @@
 # Cubre: backend (NestJS), frontend (Next.js) e infraestructura (Docker)
 # ──────────────────────────────────────────────────────────────────────────────
 
+# ── Claude Code (settings locales de máquina) ────────────────────────────────
+.claude/settings.local.json
+
 # ── Variables de entorno ──────────────────────────────────────────────────────
 # NUNCA subir secrets al repositorio
 .env
