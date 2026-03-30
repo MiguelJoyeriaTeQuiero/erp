@@ -49,10 +49,15 @@ const DETAIL_INCLUDE = {
   },
   deliveryNote: { select: { id: true, code: true, status: true, filePath: true } },
   collections: {
-    select: {
-      id: true, status: true, isPartial: true, collectedAt: true,
+    include: {
       collector: { select: { id: true, name: true } },
-      _count: { select: { lines: true } },
+      lines: {
+        include: {
+          metalType: { select: { id: true, name: true, code: true } },
+          karat: { select: { id: true, label: true, purity: true } },
+        },
+        orderBy: { createdAt: 'asc' as const },
+      },
     },
     orderBy: { collectedAt: 'desc' as const },
   },

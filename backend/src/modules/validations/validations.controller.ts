@@ -33,6 +33,14 @@ import { AuthUser } from '@common/types';
 export class ClosureValidationsController {
   constructor(private readonly validationsService: ValidationsService) {}
 
+  @Get()
+  @ApiOperation({ summary: 'Listar sesiones de validación del cierre' })
+  @ApiParam({ name: 'closureId', description: 'ID del cierre' })
+  @ApiResponse({ status: 200, description: 'Lista de sesiones de validación' })
+  findByClosure(@Param('closureId', ParseUUIDPipe) closureId: string) {
+    return this.validationsService.findByClosure(closureId);
+  }
+
   @Post()
   @Roles('admin', 'oficina', 'validador')
   @ApiOperation({

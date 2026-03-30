@@ -56,7 +56,7 @@ export function useClosureAudit(id: string) {
   return useQuery({
     queryKey: queryKeys.closures.audit(id),
     queryFn: () =>
-      api.get<ApiResponse<AuditLog[]>>(`/closures/${id}/audit`).then((r) => r.data),
+      api.get<ApiResponse<AuditLog[]>>(`/audit/entity/closure/${id}`).then((r) => r.data),
     enabled: !!id,
   });
 }

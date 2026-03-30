@@ -58,6 +58,14 @@ export class ValidationsService {
 
   // ── Consultas ──────────────────────────────────────────────────────────────
 
+  async findByClosure(closureId: string) {
+    return this.prisma.validationSession.findMany({
+      where: { closureId },
+      include: SESSION_INCLUDE,
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async findOne(id: string) {
     const session = await this.prisma.validationSession.findUnique({
       where: { id },
