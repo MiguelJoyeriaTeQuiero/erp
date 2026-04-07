@@ -34,9 +34,10 @@ RUN addgroup -S nestjs && adduser -S nestjs -G nestjs
 
 # Copiar node_modules completos desde builder
 # (se incluye el CLI de Prisma, devDep necesario para migrate deploy en runtime)
-COPY --from=builder --chown=nestjs:nestjs /app/node_modules ./node_modules
-COPY --from=builder --chown=nestjs:nestjs /app/dist        ./dist
-COPY --from=builder --chown=nestjs:nestjs /app/prisma      ./prisma
+COPY --from=builder --chown=nestjs:nestjs /app/node_modules    ./node_modules
+COPY --from=builder --chown=nestjs:nestjs /app/dist            ./dist
+COPY --from=builder --chown=nestjs:nestjs /app/prisma          ./prisma
+COPY --from=builder --chown=nestjs:nestjs /app/prisma.config.ts ./prisma.config.ts
 COPY --chown=nestjs:nestjs package*.json ./
 
 # Directorio persistente para documentos subidos (montado como volumen en compose)
