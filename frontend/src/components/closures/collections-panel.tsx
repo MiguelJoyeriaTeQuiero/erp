@@ -49,11 +49,6 @@ function CollectionCard({
   collection: Collection;
   closureId: string;
 }) {
-  const totalGrams = collection.lines?.reduce(
-    (sum, l) => sum + parseFloat(l.gramsDeclared),
-    0,
-  ) ?? 0;
-
   return (
     <Link
       href={`/cierres/${closureId}/recogidas/${collection.id}`}
@@ -77,11 +72,16 @@ function CollectionCard({
           {collection.collector && ` · ${collection.collector.name}`}
         </p>
         {collection.lines && collection.lines.length > 0 && (
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {collection.lines.length} línea{collection.lines.length !== 1 ? 's' : ''}
-            {' · '}
-            {formatGrams(totalGrams)} totales
-          </p>
+          <div className="mt-1 space-y-0.5">
+            {collection.lines.map((line) => (
+              <p key={line.id} className="text-xs text-muted-foreground">
+                {line.metalType?.name ?? '—'}{' '}
+                <span className="font-medium">{line.karat?.label ?? '—'}</span>
+                {' · '}
+                {formatGrams(line.gramsDeclared)} g
+              </p>
+            ))}
+          </div>
         )}
       </div>
     </Link>

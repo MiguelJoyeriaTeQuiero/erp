@@ -45,6 +45,10 @@ interface DraftLine {
   agreedGrams?: string;
   /** Etiqueta del quilataje pactado */
   agreedKaratLabel?: string;
+  /** Pureza del quilataje pactado en el cierre */
+  agreedKaratPurity?: string;
+  /** Pureza del quilataje seleccionado actualmente (almacenada en estado para evitar lookups en render) */
+  selectedKaratPurity?: string;
 }
 
 // ── Tarjeta de línea ─────────────────────────────────────────────────────────
@@ -68,9 +72,38 @@ function LineCard({
 }) {
   const entered = parseFloat(line.gramsDeclared);
   const agreed = line.agreedGrams ? parseFloat(line.agreedGrams) : null;
-  const pct = agreed && !isNaN(entered) && entered > 0 ? Math.min((entered / agreed) * 100, 120) : 0;
-  const isOver = agreed !== null && !isNaN(entered) && entered > agreed;
-  const isOk = agreed !== null && !isNaN(entered) && entered > 0 && Math.abs(entered - agreed) / agreed < 0.01;
+
+  // Pureza leída del estado (almacenada al seleccionar quilataje) — no lookup en render
+  const selectedPurity = line.selectedKaratPurity ? parseFloat(line.selectedKaratPurity) : null;
+  const agreedPurity = line.agreedKaratPurity ? parseFloat(line.agreedKaratPurity) : null;
+
+  const karatsDiffer =
+    selectedPurity !== null &&
+    agreedPurity !== null &&
+    Math.abs(selectedPurity - agreedPurity) > 0.0001;
+
+  // Gramos equivalentes al quilataje pactado: entregados × (pureza_entregada / pureza_pactada)
+  const equivalentGrams =
+    !isNaN(entered) &&
+    entered > 0 &&
+    selectedPurity !== null &&
+    agreedPurity !== null &&
+    agreedPurity > 0
+      ? entered * (selectedPurity / agreedPurity)
+      : entered;
+
+  // Etiqueta del quilataje seleccionado (solo para mostrar en el aviso)
+  const selectedKaratLabel = karats?.find((k) => k.id === line.karatId)?.label;
+
+  const pct = agreed && !isNaN(equivalentGrams) && equivalentGrams > 0
+    ? Math.min((equivalentGrams / agreed) * 100, 120)
+    : 0;
+  const isOver = agreed !== null && !isNaN(equivalentGrams) && equivalentGrams > agreed;
+  const isOk =
+    agreed !== null &&
+    !isNaN(equivalentGrams) &&
+    equivalentGrams > 0 &&
+    Math.abs(equivalentGrams - agreed) / agreed < 0.01;
 
   return (
     <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
@@ -81,7 +114,7 @@ function LineCard({
           {line.agreedKaratLabel && (
             <span className="ml-2 font-normal normal-case">
               · Pactado: {line.agreedKaratLabel}
-              {line.agreedGrams && ` · ${formatGrams(line.agreedGrams)} g`}
+              {line.agreedGrams && ` · ${formatGrams(line.agreedGrams)}`}
             </span>
           )}
         </span>
@@ -127,12 +160,26 @@ function LineCard({
           <div className="rounded-xl bg-muted/40 p-3 space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">
-                Entregado: <span className="font-semibold text-foreground">{formatGrams(entered)} g</span>
+                Entregado:{' '}
+                <span className="font-semibold text-foreground">{formatGrams(entered)}</span>
+                {karatsDiffer && selectedKaratLabel && (
+                  <span className="ml-1 text-muted-foreground">({selectedKaratLabel})</span>
+                )}
               </span>
               <span className="text-muted-foreground">
-                Pactado: <span className="font-semibold text-foreground">{formatGrams(agreed)} g</span>
+                Pactado:{' '}
+                <span className="font-semibold text-foreground">{formatGrams(agreed!)}</span>
               </span>
             </div>
+
+            {/* Aviso de conversión por quilataje */}
+            {karatsDiffer && selectedKaratLabel && (
+              <p className="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 rounded-lg px-2 py-1">
+                Conversión: {formatGrams(entered)} ({selectedKaratLabel}) ≈{' '}
+                <span className="font-semibold">{formatGrams(equivalentGrams)} eq.</span>{' '}
+                ({line.agreedKaratLabel})
+              </p>
+            )}
 
             {/* Barra de progreso */}
             <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
@@ -146,12 +193,16 @@ function LineCard({
             </div>
 
             {/* Etiqueta del porcentaje */}
-            <p className={cn(
-              'text-xs text-right font-medium',
-              isOk ? 'text-emerald-600 dark:text-emerald-400' :
-              isOver ? 'text-blue-600 dark:text-blue-400' :
-              'text-amber-600 dark:text-amber-400',
-            )}>
+            <p
+              className={cn(
+                'text-xs text-right font-medium',
+                isOk
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : isOver
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-amber-600 dark:text-amber-400',
+              )}
+            >
               {pct.toFixed(0)}%{' '}
               {isOk ? '✓ coincide' : isOver ? '(supera lo pactado)' : '(inferior a lo pactado)'}
             </p>
@@ -198,6 +249,8 @@ export default function NuevaRecogidaPage({
           gramsDeclared: '',
           agreedGrams: cl.grams,
           agreedKaratLabel: cl.karat?.label ?? '—',
+          agreedKaratPurity: cl.karat?.purity,
+          selectedKaratPurity: cl.karat?.purity, // inicialmente igual al pactado
           closureLineId: cl.id,
         })),
       );
@@ -216,7 +269,16 @@ export default function NuevaRecogidaPage({
 
   const updateLine = (localId: string, patch: Partial<DraftLine>) => {
     setLines((prev) =>
-      prev.map((l) => (l.localId === localId ? { ...l, ...patch } : l)),
+      prev.map((l) => {
+        if (l.localId !== localId) return l;
+        const updated = { ...l, ...patch };
+        // Cuando cambia el quilataje, guardar su pureza en estado para usarla en el cálculo
+        if (patch.karatId !== undefined && karats) {
+          const karat = karats.find((k) => k.id === patch.karatId);
+          updated.selectedKaratPurity = karat?.purity;
+        }
+        return updated;
+      }),
     );
   };
 

@@ -14,6 +14,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/shared/status-badge';
+import { SpotPricesCard } from '@/components/dashboard/spot-prices-card';
+import { TradingViewMiniChart } from '@/components/dashboard/tradingview-mini-chart';
 import { useClosures } from '@/hooks/use-closures';
 import { useIncidents } from '@/hooks/use-incidents';
 import { useCollections } from '@/hooks/use-collections';
@@ -88,6 +90,49 @@ export default function DashboardPage() {
         <p className="text-muted-foreground text-sm mt-0.5">
           Resumen de actividad del sistema
         </p>
+      </div>
+
+      {/* ── Cotizaciones + Gráficos ── */}
+      <div className="grid gap-5 lg:grid-cols-3">
+        {/* Precios del sistema (izquierda) */}
+        <div className="lg:col-span-1">
+          <SpotPricesCard />
+        </div>
+
+        {/* Gráficos TradingView (derecha, 2 columnas) */}
+        <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-1 pt-3 px-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-1.5">
+                <span className="size-2.5 rounded-full bg-yellow-400 inline-block" />
+                Oro — XAU/USD
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 pb-2">
+              <TradingViewMiniChart
+                symbol="TVC:GOLD"
+                trendColor="rgba(250, 204, 21, 1)"
+                height={200}
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-1 pt-3 px-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-1.5">
+                <span className="size-2.5 rounded-full bg-slate-400 inline-block" />
+                Plata — XAG/USD
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 pb-2">
+              <TradingViewMiniChart
+                symbol="TVC:SILVER"
+                trendColor="rgba(148, 163, 184, 1)"
+                height={200}
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* ── KPIs ── */}
