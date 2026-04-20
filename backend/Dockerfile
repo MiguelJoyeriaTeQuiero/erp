@@ -37,7 +37,7 @@ RUN addgroup -S nestjs && adduser -S nestjs -G nestjs
 COPY --from=builder --chown=nestjs:nestjs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nestjs /app/dist        ./dist
 COPY --from=builder --chown=nestjs:nestjs /app/prisma      ./prisma
-COPY --chown=nestjs:nestjs package*.json ./
+COPY --chown=nestjs:nestjs package*.json prisma.config.js ./
 
 # Directorio persistente para documentos subidos (montado como volumen en compose)
 RUN mkdir -p /app/uploads && chown nestjs:nestjs /app/uploads
