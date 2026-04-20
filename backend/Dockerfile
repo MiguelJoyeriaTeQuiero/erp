@@ -14,9 +14,6 @@ COPY prisma ./prisma/
 RUN npm ci
 
 # Generar cliente Prisma con el adaptador de pg
-# DATABASE_URL dummy solo para que la validación del schema pase en build;
-# el valor real se inyecta en runtime y es usado por `migrate deploy`.
-ENV DATABASE_URL="postgresql://build:build@build:5432/build"
 RUN npx prisma generate
 
 # Copiar código fuente y compilar TypeScript → dist/
