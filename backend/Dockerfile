@@ -47,4 +47,4 @@ USER nestjs
 EXPOSE 3001
 
 # Al arrancar: aplicar migraciones pendientes y luego iniciar el servidor
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
